@@ -8,13 +8,9 @@ namespace DPS {
     public static void Postfix(Attack __instance, Humanoid character, bool __result, int ___m_currentAttackCainLevel) {
       if (__result && character == Player.m_localPlayer) {
         DPSMeter.Start();
-        var hitData = __instance.GetWeapon().GetDamage().Clone();
-        hitData.Modify(__instance.m_damageMultiplier);
-        if (__instance.m_attackChainLevels > 1 && ___m_currentAttackCainLevel == __instance.m_attackChainLevels - 1)
-          hitData.Modify(2f);
-        DPSMeter.AddBaseDamage(hitData);
         var stamina = Call.Attack_GetAttackStamina(__instance);
-        DPSMeter.AddTotalStamina(stamina);
+        DPSMeter.AddStamina(stamina);
+        DPSMeter.AddHit();
       }
     }
   }

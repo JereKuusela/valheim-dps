@@ -3,24 +3,44 @@ using System.Collections.Generic;
 using Service;
 
 namespace DPS {
+  class Stats {
+    public float Hits = 0;
+    public float Damage = 0;
+    public float StructureDamage = 0;
+    public float Staggering = 0;
+    public float TotalStamina = 0;
+    public float Stamina = 0;
+    public float DamagePerStamina => Stamina > 0 ? Damage / Stamina : 0;
+    public float StructureDamagePerStamina => Stamina > 0 ? StructureDamage / Stamina : 0;
+    public static Stats operator +(Stats a, Stats b)
+        => new Stats()
+        {
+          Hits = a.Hits + b.Hits,
+          Damage = a.Damage + b.Damage,
+          StructureDamage = a.StructureDamage + b.StructureDamage,
+          Staggering = a.Staggering + b.Staggering,
+          TotalStamina = a.TotalStamina + b.TotalStamina,
+          Stamina = a.Stamina + b.Stamina
+        };
+    public static Stats operator *(Stats a, float b)
+        => new Stats()
+        {
+          Hits = a.Hits * b,
+          Damage = a.Damage * b,
+          StructureDamage = a.StructureDamage * b,
+          Staggering = a.Staggering * b,
+          TotalStamina = a.TotalStamina * b,
+          Stamina = a.Stamina * b
+        };
+  }
   public class DPSMeter {
     private static DateTime? startTime = null;
     private static DateTime? endTime = null;
     private static float damageTaken = 0;
-    private static float damage = 0;
-    private static float structureDamage = 0;
-    private static float baseDamage = 0;
-    private static float baseStructureDamage = 0;
+    private static Stats stats = new Stats();
+
     // Pending damages are used to update DPS at end of the attack to make it more stable.
-    private static float pendingDamage = 0;
-    private static float pendingStructureDamage = 0;
-    private static float pendingBaseDamage = 0;
-    private static float pendingBaseStructureDamage = 0;
-    private static HitData.DamageTypes? pendingBaseDamageTypes = null;
-    private static float stagger = 0;
-    private static float totalStamina = 0;
-    private static float attackStamina = 0;
-    private static float hits = 0;
+    private static Stats pending = new Stats();
     public static void Start() {
       if (!Settings.ShowDPS) return;
       if (startTime.HasValue) return;
@@ -32,32 +52,14 @@ namespace DPS {
       startTime = null;
       endTime = null;
       damageTaken = 0;
-      damage = 0;
-      structureDamage = 0;
-      baseDamage = 0;
-      baseStructureDamage = 0;
-      pendingDamage = 0;
-      pendingStructureDamage = 0;
-      pendingBaseDamage = 0;
-      pendingBaseStructureDamage = 0;
-      pendingBaseDamageTypes = null;
-      stagger = 0;
-      attackStamina = 0;
-      totalStamina = 0;
-      hits = 0;
-    }
-    public static void AddBaseDamage(HitData.DamageTypes hit) {
-      if (!startTime.HasValue) return;
-      if (hit.m_damage > 1E+9f) return;
-      // Base damage is only available at start of the attack so it must be stored when the actual hits are resolved.
-      pendingBaseDamageTypes = hit;
+      stats = new Stats();
+      pending = new Stats();
     }
     private static void AddStructureDamage(HitData hit, int tooltier, HitData.DamageModifiers modifiers) {
       if (!startTime.HasValue) return;
       if (hit.m_damage.m_damage > 1E+9f) return;
       if (hit.m_toolTier < tooltier) return;
-      pendingStructureDamage += hit.GetTotalDamage();
-      AddPendingBaseStructureDamage(modifiers);
+      pending.StructureDamage += hit.GetTotalDamage();
     }
     public static void AddStructureDamage(HitData hit, WearNTear obj) => AddStructureDamage(hit, 0, obj.m_damages);
     public static void AddStructureDamage(HitData hit, TreeLog obj) => AddStructureDamage(hit, obj.m_minToolTier, obj.m_damages);
@@ -70,100 +72,58 @@ namespace DPS {
       damageTaken += hit.GetTotalDamage();
       SetTime();
     }
-    private static void AddPendingBaseDamage(Character target) {
-      if (!startTime.HasValue) return;
-      var hit = new HitData()
-      {
-        m_damage = pendingBaseDamageTypes.Value
-      };
-
-      var damageModifiers = Call.Character_GetDamageModifiers(target);
-      hit.ApplyResistance(damageModifiers, out var mod);
-      if (target.IsPlayer()) {
-        float bodyArmor = target.GetBodyArmor();
-        hit.ApplyArmor(bodyArmor);
-      }
-      pendingBaseDamage += hit.GetTotalDamage();
-    }
-    private static void AddPendingBaseStructureDamage(HitData.DamageModifiers modifiers) {
-      if (!startTime.HasValue) return;
-      var hit = new HitData()
-      {
-        m_damage = pendingBaseDamageTypes.Value.Clone()
-      };
-      hit.ApplyResistance(modifiers, out var mod);
-      pendingBaseStructureDamage += hit.GetTotalDamage();
-    }
     public static void AddDamage(HitData hit, Character target) {
       if (!startTime.HasValue) return;
       if (hit.m_damage.m_damage > 1E+9f) return;
-      AddPendingBaseDamage(target);
-      pendingDamage += hit.GetTotalDamage();
-      stagger += hit.m_damage.GetTotalStaggerDamage() * hit.m_staggerMultiplier;
-      hits++;
+      pending.Damage += hit.GetTotalDamage();
+      pending.Staggering += hit.m_damage.GetTotalStaggerDamage() * hit.m_staggerMultiplier;
     }
     public static void AddDot(HitData hit) {
       if (!startTime.HasValue) return;
       if (hit.m_damage.m_damage > 1E+9f) return;
-      pendingDamage += hit.GetTotalDamage();
+      pending.Damage += hit.GetTotalDamage();
     }
-    public static void AddAttackStamina(float stamina) {
+    public static void AddStamina(float stamina) {
       if (!startTime.HasValue) return;
-      DPSMeter.attackStamina += stamina;
+      pending.Stamina += stamina;
+    }
+    public static void AddHit() {
+      if (!startTime.HasValue) return;
+      pending.Hits++;
     }
     public static void AddTotalStamina(float stamina) {
       if (!startTime.HasValue) return;
-      DPSMeter.totalStamina += stamina;
+      pending.TotalStamina += stamina;
     }
     public static void SetTime() {
       if (!startTime.HasValue) return;
       endTime = DateTime.Now;
-      damage += pendingDamage;
-      pendingDamage = 0;
-      baseDamage += pendingBaseDamage;
-      pendingBaseDamage = 0;
-      structureDamage += pendingStructureDamage;
-      pendingStructureDamage = 0;
-      baseStructureDamage += pendingBaseStructureDamage;
-      pendingBaseStructureDamage = 0;
+      stats += pending;
+      pending = new Stats();
     }
     public static List<string> Get() {
       if (!Settings.ShowDPS) return null;
-      var time = 1.0;
+      var time = 0.00001;
       if (startTime.HasValue && endTime.HasValue)
-        time = endTime.Value.Subtract(startTime.Value).TotalMilliseconds;
-      var damagePerSecond = damage * 1000.0 / time;
-      var baseDamagePerSecond = baseDamage * 1000.0 / time;
-      var staminaPerSecond = attackStamina * 1000.0 / time;
-      var damagePerStamina = attackStamina > 0 ? (damage + pendingDamage) / attackStamina : 0;
-      var baseDamagePerStamina = attackStamina > 0 ? (baseDamage + pendingBaseDamage) / attackStamina : 0;
-      var staggerPerSecond = stagger * 1000.0 / time;
-      var hitsPerSecond = hits * 1000.0 / time;
-      var attackSpeed = hits > 0 ? time / hits / 1000.0 : 0;
-      var damageTakenPerSecond = damageTaken * 1000.0 / time;
+        time = endTime.Value.Subtract(startTime.Value).TotalSeconds;
+      var perSecond = 1f / (float)time;
+      var ps = stats * perSecond;
+      var total = stats + pending;
+      var attackSpeed = ps.Hits > 0 ? 1 / ps.Hits : 0;
       var lines = new List<string>();
-      lines.Add("Time: " + Format.Float(time / 1000.0) + " seconds with " + Format.Float(hits) + " hits");
-      lines.Add("DPS: " + Format.Float(damagePerSecond) + " (total " + Format.Float(damage + pendingDamage) + ")"
-        + ", per stamina: " + Format.Float(damagePerStamina));
-      lines.Add("Normalized: " + Format.Float(baseDamagePerSecond) + " (total " + Format.Float(baseDamage + pendingBaseDamage) + ")"
-        + ", per stamina: " + Format.Float(baseDamagePerStamina));
-      lines.Add("Stamina: " + Format.Float(staminaPerSecond) + " (total " + Format.Float(attackStamina) + ")");
-      if (totalStamina != attackStamina)
-        lines.Add("Total stamina: " + Format.Float(totalStamina * 1000.0 / time) + " (total " + Format.Float(totalStamina) + ")");
-      lines.Add("Staggering: " + Format.Float(staggerPerSecond) + " (total " + Format.Float(stagger) + ")");
-      lines.Add("Attack speed: " + Format.Float(hitsPerSecond) + " (" + Format.Float(attackSpeed) + " s per attack)");
+      lines.Add("Time: " + Format.Float(time) + " seconds with " + Format.Float(stats.Hits) + " hits");
+      lines.Add("DPS: " + Format.Float(ps.Damage) + " (total " + Format.Float(total.Damage) + ")"
+        + ", per stamina: " + Format.Float(stats.DamagePerStamina));
+      lines.Add("Stamina: " + Format.Float(ps.Stamina) + " (total " + Format.Float(total.Stamina) + ")");
+      if (stats.TotalStamina != stats.Stamina)
+        lines.Add("Total stamina: " + Format.Float(ps.TotalStamina) + " (total " + Format.Float(total.TotalStamina) + ")");
+      lines.Add("Staggering: " + Format.Float(ps.Staggering) + " (total " + Format.Float(total.Staggering) + ")");
+      lines.Add("Attack speed: " + Format.Float(ps.Hits) + " (" + Format.Float(attackSpeed) + " s per attack)");
       if (damageTaken > 0)
-        lines.Add("Damage taken: " + Format.Float(damageTakenPerSecond) + " (total " + Format.Float(damageTaken) + ")");
-      if (structureDamage > 0) {
-        var structureDamagePerSecond = structureDamage * 1000.0 / time;
-        var structureDamagePerStamina = (structureDamage + pendingStructureDamage) / totalStamina;
-        var baseStructureDamagePerSecond = baseStructureDamage * 1000.0 / time;
-        var baseStructureDamagePerStamina = (baseStructureDamage + pendingBaseStructureDamage) / totalStamina;
-        lines.Add("Structure DPS: " + Format.Float(structureDamagePerSecond) + " (total " + Format.Float(structureDamage + pendingStructureDamage) + ")"
-          + ", per stamina: " + Format.Float(structureDamagePerStamina));
-        lines.Add("Normalized: " + Format.Float(baseStructureDamagePerSecond) + " (total " + Format.Float(baseStructureDamage + pendingBaseStructureDamage) + ")"
-          + ", per stamina: " + Format.Float(baseStructureDamagePerStamina));
-
+        lines.Add("Damage taken: " + Format.Float(damageTaken * perSecond) + " (total " + Format.Float(damageTaken) + ")");
+      if (stats.StructureDamage > 0) {
+        lines.Add("Structure DPS: " + Format.Float(ps.StructureDamage) + " (total " + Format.Float(total.StructureDamage) + ")"
+          + ", per stamina: " + Format.Float(stats.StructureDamagePerStamina));
       }
       return lines;
     }

@@ -76,15 +76,11 @@ namespace DPS {
         var killed = Dummy.Kill();
         Player.m_localPlayer.Message(MessageHud.MessageType.TopLeft, "Killing all training dummies:" + killed, 0, null);
       });
-      new Terminal.ConsoleCommand("dummy_toggle", "[resistance1=modifier1] [resistance2=modifier2]... - Spawns or kills all training dummies.", delegate (Terminal.ConsoleEventArgs args) {
-        if (!Admin.Enabled) args.Context.AddString("Unauthorized to toggle dummies.");
-        var killed = Dummy.Kill();
-        if (killed > 0) {
-          Player.m_localPlayer.Message(MessageHud.MessageType.TopLeft, "Spawned a training dummy", 0, null);
-        } else {
-          Dummy.Spawn(args.Args);
-          Player.m_localPlayer.Message(MessageHud.MessageType.TopLeft, "Spawned a training dummy", 0, null);
-        }
+      new Terminal.ConsoleCommand("dummy_reset", "[resistance1=modifier1] [resistance2=modifier2]... - Kills all training dummies and spawns a new one.", delegate (Terminal.ConsoleEventArgs args) {
+        if (!Admin.Enabled) args.Context.AddString("Unauthorized to spawn dummies.");
+        Dummy.Kill();
+        Dummy.Spawn(args.Args);
+        Player.m_localPlayer.Message(MessageHud.MessageType.TopLeft, "Spawned a training dummy", 0, null);
       });
     }
   }

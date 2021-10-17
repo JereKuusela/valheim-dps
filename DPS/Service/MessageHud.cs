@@ -11,18 +11,18 @@ namespace Service {
     public static void Postfix(MessageHud __instance) {
       // Wait for the game to load.
       if (Player.m_localPlayer == null) return;
+      if (Hud.IsUserHidden()) return;
       var hud = __instance;
       var previousText = hud.m_messageText.text;
       var lines = GetMessage();
       if (lines.Count == 0) return;
-      var previousPadding = 0;
-      while (previousText.StartsWith(" \n")) {
-        previousPadding++;
+      while (previousText.StartsWith(" \n"))
         previousText = previousText.Substring(2);
-      }
-      var padding = previousPadding + lines.Count - 2;
+      var previousLines = previousText != "" ? previousText.Split('\n').Length : 0;
+      var padding = previousLines + lines.Count - 2;
       for (var i = 0; i < padding; i++) lines.Insert(0, " ");
       if (previousText != "") {
+        lines.Insert(0, " ");
         lines.Insert(0, " ");
         lines.Add(" ");
         lines.Add(previousText);
@@ -31,6 +31,7 @@ namespace Service {
       hud.m_messageText.CrossFadeAlpha(1f, 0f, true);
       // Icon is not very relevant information and will pop up over the text.
       hud.m_messageIcon.canvasRenderer.SetAlpha(0f);
+      hud.m_messageIcon.CrossFadeAlpha(0f, 0f, true);
     }
   }
   // Track message change to ensure a clean slate in every update.
