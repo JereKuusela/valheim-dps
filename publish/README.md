@@ -5,43 +5,44 @@
 # Manual Installation
 
 1. Install the [BepInExPack Valheim](https://valheim.thunderstore.io/package/denikson/BepInExPack_Valheim).
-2. Download the latest zip
+2. Download the latest zip.
 3. Extract it in the \<GameDirectory\>\BepInEx\plugins\ folder.
 4. Optionally also install the [Configuration manager](https://github.com/BepInEx/BepInEx.ConfigurationManager/releases/tag/v16.4).
+5. Optionally also install [Server devcommands](https://valheim.thunderstore.io/package/JereKuusela/Server_devcommands/) to use it as an admin on servers.
 
 # Instructions
 
-Use "/bind KEY COMMAND" to quickly toggle features on and off. For example "/bind KeyPad1 dps".
+Use `/bind [key] [command]` to quickly toggle features on and off. For example `bind keypad1 dps`.
 
 Available commands:
 
-- dps: Enables, resets or disables the DPS meter.
-- exp: Enables, resets or disables the experience meter.
-- dummy_reset PARAMETERS: Kills all training dummies and spawns a new one. Requires admin status on servers.
-- dummy_spawn PARAMETERS: Spawns a training dummy. Use if you need multiple dummies. Requires admin status on servers.
-- dummy_kill: Kills all training dummies. Use for a final clean up. Requires admin status on servers.
+- `dps`: Enables, resets or disables the DPS meter.
+- `exp`: Enables, resets or disables the experience meter.
+- `dummy_reset [PARAMETERS]`: Kills all training dummies and spawns a new one.
+- `dummy_spawn [PARAMETERS]`: Spawns a training dummy. Use if you need multiple dummies.
+- `dummy_kill`: Kills all training dummies. Use for a final clean up.
 
 # Parameters
 
 Damage resistances and status effects of the training dummies can be configured. By default, dummies have no status effects and are neutral to all damage (except chop and pickaxe which they ignore).
 
-Format for resistances is "damagetype=amount". If amount is omitted, neutral resistance is used.
+Format for resistances is `damagetype=amount`. If amount is omitted, neutral resistance is used.
 
 Available damage types are \*, blunt, chop, fire, frost, lightning, pickaxe, pierce, poison, slash and spirit.
 
 Available amounts are ignore, immune, very resistant, resistant, normal, weak and very weak. Numeric values also work: -, 0, 0.25, 0.5, 1, 1.5, 2.
 
-Format for status effects is "effect=seconds". If seconds is omitted, default duration is used.
+Format for status effects is `effect=seconds`. If seconds is omitted, default duration is used.
 
 Available status effects are barleywine, bonemass, cold, corpserun, eikthyr, elder, freezing, frostresist, moder, poisonresist, shield, tared, wet and yagluth.
 
-For example "dummy_toggle \*=- chop wet" would spawn a wet dummy that is only vulnerable to chop damage (like trees).
+For example `dummy_toggle \*=- chop wet` would spawn a wet dummy that is only vulnerable to chop damage (like trees).
 
 # Configuration
 
 After first start up, the config file can be found in the \<GameDirectory\>\BepInEx\config\ folder.
 
-Configuration can be used modify how the game works to make testing easier. For servers, admin status is required.
+Configuration can be used modify how the game works to make testing easier.
 
 Configuration is only active when either DPS or experience meter is displayed.
 
@@ -76,5 +77,11 @@ Note: Skill level can be a decimal number. This is a bug in the game and not an 
 
 # Changelog
 
-- v1.0.0:
-	- Initial release
+- v1.1:
+	- Adds a new icon.
+	- Replaces the admim check with a cheat access check.
+
+- v1.0:
+	- Initial release.
+
+Thanks for Azumatt for creating the mod icon!

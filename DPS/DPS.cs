@@ -4,7 +4,7 @@ using HarmonyLib;
 using Service;
 
 namespace DPS {
-  [BepInPlugin("valheim.jerekuusela.dps", "DPS", "1.0.0.0")]
+  [BepInPlugin("valheim.jerekuusela.dps", "DPS", "1.1.0.0")]
   public class DPS : BaseUnityPlugin {
     public void Awake() {
       Settings.Init(Config);
@@ -18,10 +18,8 @@ namespace DPS {
       var dps = DPSMeter.Get();
       var eps = ExperienceMeter.Get();
       if (dps != null || eps != null) {
-        if (Admin.Checking)
-          lines.Add(Format.String("Authenticating..."));
-        else if (Settings.AdminRequired())
-          lines.Add(Format.String("Authentication failed, some features won't work.", "red"));
+        if (Settings.CheatsRequired())
+          lines.Add(Format.String("No cheat access, some features won't work.", "red"));
         else {
           if (Settings.CreatureDamageRange >= 0)
             lines.Add("Creature damage range: " + Format.Percent(Settings.CreatureDamageRange));
@@ -45,7 +43,12 @@ namespace DPS {
       }
       return lines;
     }
-
+    public static void AddMessage(Terminal context, string message) {
+      context.AddString(message);
+      var hud = MessageHud.instance;
+      if (!hud) return;
+      Player.m_localPlayer?.Message(MessageHud.MessageType.TopLeft, message);
+    }
 
     private static void InitCommands() {
       new Terminal.ConsoleCommand("dps", "Toggles DPS tool.", delegate (Terminal.ConsoleEventArgs args) {
@@ -67,17 +70,26 @@ namespace DPS {
         }
       });
       new Terminal.ConsoleCommand("dummy_spawn", "[resistance1=modifier1] [resistance2=modifier2]... - Spawns a training dummy.", delegate (Terminal.ConsoleEventArgs args) {
-        if (!Admin.Enabled) args.Context.AddString("Unauthorized to spawn dummies.");
+        if (!Settings.IsCheats) {
+          AddMessage(args.Context, "Unauthorized to spawn dummies.");
+          return;
+        }
         Dummy.Spawn(args.Args);
         Player.m_localPlayer.Message(MessageHud.MessageType.TopLeft, "Spawned a training dummy", 0, null);
       });
       new Terminal.ConsoleCommand("dummy_kill", "Kills all training dummies.", delegate (Terminal.ConsoleEventArgs args) {
-        if (!Admin.Enabled) args.Context.AddString("Unauthorized to kill dummies.");
+        if (!Settings.IsCheats) {
+          AddMessage(args.Context, "Unauthorized to kill dummies.");
+          return;
+        }
         var killed = Dummy.Kill();
         Player.m_localPlayer.Message(MessageHud.MessageType.TopLeft, "Killing all training dummies:" + killed, 0, null);
       });
       new Terminal.ConsoleCommand("dummy_reset", "[resistance1=modifier1] [resistance2=modifier2]... - Kills all training dummies and spawns a new one.", delegate (Terminal.ConsoleEventArgs args) {
-        if (!Admin.Enabled) args.Context.AddString("Unauthorized to spawn dummies.");
+        if (!Settings.IsCheats) {
+          AddMessage(args.Context, "Unauthorized to spawn dummies.");
+          return;
+        }
         Dummy.Kill();
         Dummy.Spawn(args.Args);
         Player.m_localPlayer.Message(MessageHud.MessageType.TopLeft, "Spawned a training dummy", 0, null);

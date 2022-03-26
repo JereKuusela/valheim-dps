@@ -1,13 +1,13 @@
 using BepInEx.Configuration;
-using Service;
 
 namespace DPS {
   public partial class Settings {
+    public static bool IsCheats => (ZNet.instance && ZNet.instance.IsServer()) || Console.instance.IsCheatsEnabled();
     public static ConfigEntry<bool> configShowDPS;
     public static bool ShowDPS => configShowDPS.Value;
     public static ConfigEntry<bool> configShowExperience;
     public static bool ShowExperience => configShowExperience.Value;
-    private static bool settingsEnabled => Admin.Enabled && (ShowDPS || ShowExperience);
+    private static bool settingsEnabled => IsCheats && (ShowDPS || ShowExperience);
     private static float fromPercent(int value) => (float)value / 100f;
     public static ConfigEntry<int> configSetSkills;
     public static float SetSkills => settingsEnabled && configSetSkills.Value != -1 ? fromPercent(configSetSkills.Value) : -1;
@@ -23,12 +23,10 @@ namespace DPS {
       var section = "DPS";
       configShowDPS = config.Bind(section, "Show DPS meter", false, "Show DPS meter (toggle with P button in the game)");
       configShowDPS.SettingChanged += (s, e) => {
-        if (ShowDPS) Admin.Check();
         if (!ShowDPS) DPSMeter.Reset();
       };
       configShowExperience = config.Bind(section, "Show experience meter", false, "Show experience meter (toggle with L button in the game)");
       configShowExperience.SettingChanged += (s, e) => {
-        if (ShowExperience) Admin.Check();
         if (!ShowExperience) ExperienceMeter.Reset();
       };
       configSetSkills = config.Bind(section, "Override skill levels", -1, new ConfigDescription("Overrides skill level checks (-1 to disable).", new AcceptableValueRange<int>(-1, 100)));
@@ -38,7 +36,7 @@ namespace DPS {
       configNoStaminaUsage = config.Bind(section, "No stamina usage", false, "Set true to disable stamina usage");
     }
 
-    public static bool AdminRequired() => !Admin.Enabled && (
+    public static bool CheatsRequired() => !IsCheats && (
       configSetSkills.Value >= 0 ||
       configPlayerDamageRange.Value != 15 ||
       configCreatureDamageRange.Value != 25 ||
