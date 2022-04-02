@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net4.8</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BepInEx.dll">
@@ -25,8 +26,8 @@
     <Reference Include="BepInEx.Harmony.dll">
       <HintPath>..\Libs\BepInEx.Harmony.dll</HintPath>
     </Reference>
-    <Reference Include="assembly_valheim.dll">
-      <HintPath>..\Libs\assembly_valheim.dll</HintPath>
+    <Reference Include="assembly_valheim_publicized.dll">
+      <HintPath>..\Libs\assembly_valheim_publicized.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>
