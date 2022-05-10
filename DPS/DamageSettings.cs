@@ -58,3 +58,13 @@ public class Attack_Start_CapChain {
     }
   }
 }
+[HarmonyPatch(typeof(Player), nameof(Player.PlayerAttackInput))]
+public class AutoShootBow {
+  static void Prefix(Player __instance) {
+    if (__instance.InPlaceMode() || !Settings.AutoFireBow) return;
+    var currentWeapon = __instance.GetCurrentWeapon();
+    if (currentWeapon == null || currentWeapon.m_shared.m_holdDurationMin <= 0f) return;
+    if (__instance.GetAttackDrawPercentage() < 1.0f) return;
+    __instance.m_attackHold = false;
+  }
+}

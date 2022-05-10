@@ -18,6 +18,8 @@ public partial class Settings {
   public static int MaxAttackChainLevels => settingsEnabled && configMaxAttackChainLevels.Value != -1 ? configMaxAttackChainLevels.Value : -1;
   public static ConfigEntry<bool> configNoStaminaUsage;
   public static bool NoStaminaUsage => settingsEnabled && configNoStaminaUsage.Value;
+  public static ConfigEntry<bool> configAutoFireBow;
+  public static bool AutoFireBow => settingsEnabled && configAutoFireBow.Value;
   public static void Init(ConfigFile config) {
     var section = "DPS";
     configShowDPS = config.Bind(section, "Show DPS meter", false, "Show DPS meter (toggle with P button in the game)");
@@ -32,7 +34,8 @@ public partial class Settings {
     configPlayerDamageRange = config.Bind(section, "Min/max damage range for players", 15, new ConfigDescription("Overrides player damage range (15 to disable).", new AcceptableValueRange<int>(0, 40)));
     configCreatureDamageRange = config.Bind(section, "Min/max damage range for creatures", 25, new ConfigDescription("Overrides creature damage range (25 to disable).", new AcceptableValueRange<int>(0, 100), new ConfigurationManagerAttributes() { ShowRangeAsPercent = false }));
     configMaxAttackChainLevels = config.Bind(section, "Maximum attack chain levels", -1, new ConfigDescription("Caps the attack chains for easier testing (-1 to disable).", new AcceptableValueRange<int>(-1, 5)));
-    configNoStaminaUsage = config.Bind(section, "No stamina usage", false, "Set true to disable stamina usage");
+    configNoStaminaUsage = config.Bind(section, "No stamina usage", false, "Set true to disable stamina usage.");
+    configAutoFireBow = config.Bind(section, "Auto fire bow", false, "Automatically fires the bow when fully drawn.");
   }
 
   public static bool CheatsRequired() => !IsCheats && (
@@ -40,6 +43,7 @@ public partial class Settings {
     configPlayerDamageRange.Value != 15 ||
     configCreatureDamageRange.Value != 25 ||
     configMaxAttackChainLevels.Value >= 0 ||
-    configNoStaminaUsage.Value
+    configNoStaminaUsage.Value ||
+    configAutoFireBow.Value
   );
 }

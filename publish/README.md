@@ -51,6 +51,7 @@ Configuration is only active when either DPS or experience meter is displayed.
 - Min/max damage range for creatures: Overrides the random damage range for creature attacks.
 - Maximum attack chain levels: Caps the maximum attack chain.
 - No stamina usage: When enabled, removes all stamina costs.
+- Auto shoot bow: When enabled, the bow is shot automatically when fully drawn.
 
 For example for a controlled setup: remove stamina usage, override skill levels to 100 and set damage range to 0.
 
@@ -77,11 +78,14 @@ Note: Skill level can be a decimal number. This is a bug in the game and not an 
 
 # Changelog
 
-- v1.1:
+- v1.2
+	- Adds a new setting to automatically shoot with the bow.
+
+- v1.1
 	- Adds a new icon.
 	- Replaces the admim check with a cheat access check.
 
-- v1.0:
+- v1.0
 	- Initial release.
 
 Thanks for Azumatt for creating the mod icon!

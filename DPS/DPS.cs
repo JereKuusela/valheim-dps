@@ -3,7 +3,7 @@ using BepInEx;
 using HarmonyLib;
 using Service;
 namespace DPS;
-[BepInPlugin("valheim.jerekuusela.dps", "DPS", "1.1.0.0")]
+[BepInPlugin("valheim.jerekuusela.dps", "DPS", "1.2.0.0")]
 public class DPS : BaseUnityPlugin {
   public void Awake() {
     Settings.Init(Config);
