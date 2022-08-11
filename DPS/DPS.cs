@@ -1,14 +1,28 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using BepInEx;
 using HarmonyLib;
 using Service;
 namespace DPS;
-[BepInPlugin("valheim.jerekuusela.dps", "DPS", "1.2.0.0")]
+[BepInPlugin(GUID, NAME, VERSION)]
 public class DPS : BaseUnityPlugin {
+  public const string LEGACY_GUID = "valheim.jere.dps";
+  public const string GUID = "dps";
+  public const string NAME = "DPS";
+  public const string VERSION = "1.2";
+  private void MigrateConfig() {
+    var legacyConfig = Path.Combine(Path.GetDirectoryName(Config.ConfigFilePath), $"{LEGACY_GUID}.cfg");
+    if (!File.Exists(legacyConfig)) return;
+    var config = Path.Combine(Path.GetDirectoryName(Config.ConfigFilePath), $"{GUID}.cfg");
+    if (File.Exists(config))
+      File.Delete(legacyConfig);
+    else
+      File.Move(legacyConfig, config);
+  }
   public void Awake() {
+    MigrateConfig();
     Settings.Init(Config);
-    Harmony harmony = new("valheim.jerekuusela.dps");
-    harmony.PatchAll();
+    new Harmony(GUID).PatchAll();
     InitCommands();
     MessageHud_UpdateMessage.GetMessage = GetMessage;
   }
@@ -50,7 +64,7 @@ public class DPS : BaseUnityPlugin {
   }
 
   private static void InitCommands() {
-    new Terminal.ConsoleCommand("dps", "Toggles DPS tool.", (Terminal.ConsoleEventArgs args) => {
+    new Terminal.ConsoleCommand("dps", "Toggles DPS tool.", (args) => {
       if (Settings.ShowDPS && DPSMeter.Running) {
         DPSMeter.Reset();
         args.Context.AddString("DPS tool reseted.");
@@ -59,7 +73,7 @@ public class DPS : BaseUnityPlugin {
         args.Context.AddString("DPS tool " + (Settings.ShowDPS ? "enabled" : "disabled") + ".");
       }
     });
-    new Terminal.ConsoleCommand("exp", "Toggles experience tool.", (Terminal.ConsoleEventArgs args) => {
+    new Terminal.ConsoleCommand("exp", "Toggles experience tool.", (args) => {
       if (Settings.ShowExperience && ExperienceMeter.Running) {
         ExperienceMeter.Reset();
         args.Context.AddString("Experience tool reseted.");
@@ -68,7 +82,7 @@ public class DPS : BaseUnityPlugin {
         args.Context.AddString("Experience tool " + (Settings.ShowExperience ? "enabled" : "disabled") + ".");
       }
     });
-    new Terminal.ConsoleCommand("dummy_spawn", "[resistance1=modifier1] [resistance2=modifier2]... - Spawns a training dummy.", (Terminal.ConsoleEventArgs args) => {
+    new Terminal.ConsoleCommand("dummy_spawn", "[resistance1=modifier1] [resistance2=modifier2]... - Spawns a training dummy.", (args) => {
       if (!Settings.IsCheats) {
         AddMessage(args.Context, "Unauthorized to spawn dummies.");
         return;
@@ -76,7 +90,7 @@ public class DPS : BaseUnityPlugin {
       Dummy.Spawn(args.Args);
       Player.m_localPlayer.Message(MessageHud.MessageType.TopLeft, "Spawned a training dummy", 0, null);
     });
-    new Terminal.ConsoleCommand("dummy_kill", "Kills all training dummies.", (Terminal.ConsoleEventArgs args) => {
+    new Terminal.ConsoleCommand("dummy_kill", "Kills all training dummies.", (args) => {
       if (!Settings.IsCheats) {
         AddMessage(args.Context, "Unauthorized to kill dummies.");
         return;
@@ -84,7 +98,7 @@ public class DPS : BaseUnityPlugin {
       var killed = Dummy.Kill();
       Player.m_localPlayer.Message(MessageHud.MessageType.TopLeft, "Killing all training dummies:" + killed, 0, null);
     });
-    new Terminal.ConsoleCommand("dummy_reset", "[resistance1=modifier1] [resistance2=modifier2]... - Kills all training dummies and spawns a new one.", (Terminal.ConsoleEventArgs args) => {
+    new Terminal.ConsoleCommand("dummy_reset", "[resistance1=modifier1] [resistance2=modifier2]... - Kills all training dummies and spawns a new one.", (args) => {
       if (!Settings.IsCheats) {
         AddMessage(args.Context, "Unauthorized to spawn dummies.");
         return;

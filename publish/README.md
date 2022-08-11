@@ -2,13 +2,9 @@
 
 5hows DPS, stamina usage and other statistics. Accurate and configurable. Also includes an experience meter.
 
-# Manual Installation
+Install on the client (modding [guide](https://youtu.be/L9ljm2eKLrk)).
 
-1. Install the [BepInExPack Valheim](https://valheim.thunderstore.io/package/denikson/BepInExPack_Valheim).
-2. Download the latest zip.
-3. Extract it in the \<GameDirectory\>\BepInEx\plugins\ folder.
-4. Optionally also install the [Configuration manager](https://github.com/BepInEx/BepInEx.ConfigurationManager/releases/tag/v16.4).
-5. Optionally also install [Server devcommands](https://valheim.thunderstore.io/package/JereKuusela/Server_devcommands/) to use it as an admin on servers.
+Install also [Server Devcommands](https://valheim.thunderstore.io/package/JereKuusela/Server_devcommands/) to use this on a server (as an admin).
 
 # Instructions
 
@@ -80,6 +76,7 @@ Note: Skill level can be a decimal number. This is a bug in the game and not an 
 
 - v1.2
 	- Adds a new setting to automatically shoot with the bow.
+	- Changes the GUID.
 
 - v1.1
 	- Adds a new icon.
