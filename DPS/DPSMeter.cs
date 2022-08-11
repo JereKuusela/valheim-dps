@@ -100,7 +100,7 @@ public class DPSMeter {
     stats += pending;
     pending = new();
   }
-  public static List<string> Get() {
+  public static List<string>? Get() {
     if (!Settings.ShowDPS) return null;
     var time = 0.00001;
     if (startTime.HasValue && endTime.HasValue)

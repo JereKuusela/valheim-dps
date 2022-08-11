@@ -49,7 +49,7 @@ public class ExperienceMeter {
   public static float GetLevel(Skills.SkillType type) => GetSkill(type).m_level;
   public static float GetCurrent(Skills.SkillType type) => GetSkill(type).m_accumulator;
   public static float GetTotal(Skills.SkillType type) => GetSkill(type).GetNextLevelRequirement();
-  public static List<string> Get() {
+  public static List<string>? Get() {
     if (!Settings.ShowExperience) return null;
     var time = 1.0;
     if (startTime.HasValue && endTime.HasValue)

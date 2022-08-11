@@ -48,7 +48,7 @@ public class Player_RPC_UseStamina {
 }
 [HarmonyPatch(typeof(Attack), nameof(Attack.Start))]
 public class Attack_Start_CapChain {
-  static void Prefix(ref Attack previousAttack, ref int ___m_currentAttackCainLevel) {
+  static void Prefix(ref Attack? previousAttack, ref int ___m_currentAttackCainLevel) {
     if (Settings.MaxAttackChainLevels < 0) return;
     if (previousAttack == null) return;
     var nextLevel = previousAttack.m_nextAttackChainLevel;

@@ -25,6 +25,7 @@
 /// You can optionally remove fields that you won't use from this class, it's the same as leaving them null.
 /// </remarks>
 #pragma warning disable 0169, 0414, 0649
+#nullable disable
 internal sealed class ConfigurationManagerAttributes {
   /// <summary>
   /// Should the setting be shown as a percentage (only use with value range settings).
@@ -100,3 +101,4 @@ internal sealed class ConfigurationManagerAttributes {
   /// </summary>
   public System.Func<string, object> StrToObj;
 }
+#nullable enable

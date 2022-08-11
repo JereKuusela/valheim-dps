@@ -1,6 +1,7 @@
 using BepInEx.Configuration;
 namespace DPS;
 public partial class Settings {
+#nullable disable
   public static bool IsCheats => (ZNet.instance && ZNet.instance.IsServer()) || Console.instance.IsCheatsEnabled();
   public static ConfigEntry<bool> configShowDPS;
   public static bool ShowDPS => configShowDPS.Value;
@@ -20,6 +21,7 @@ public partial class Settings {
   public static bool NoStaminaUsage => settingsEnabled && configNoStaminaUsage.Value;
   public static ConfigEntry<bool> configAutoFireBow;
   public static bool AutoFireBow => settingsEnabled && configAutoFireBow.Value;
+#nullable enable
   public static void Init(ConfigFile config) {
     var section = "DPS";
     configShowDPS = config.Bind(section, "Show DPS meter", false, "Show DPS meter (toggle with P button in the game)");
