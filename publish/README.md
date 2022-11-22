@@ -74,6 +74,9 @@ Note: Skill level can be a decimal number. This is a bug in the game and not an 
 
 # Changelog
 
+- v1.3
+	- Update for Mistlands PTB.
+
 - v1.2
 	- Adds a new setting to automatically shoot with the bow.
 	- Changes the GUID.

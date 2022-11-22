@@ -1,6 +1,6 @@
 {
   "name": "DPS",
-  "version_number": "1.2.0",
+  "version_number": "1.3.0",
   "website_url": "https://github.com/JereKuusela/valheim-dps",
   "description": "5hows DPS, stamina usage and other statistics. Accurate and configurable. Also includes an experience meter.",
   "dependencies": [

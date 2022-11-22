@@ -1,6 +1,7 @@
 using BepInEx.Configuration;
 namespace DPS;
-public partial class Settings {
+public partial class Settings
+{
 #nullable disable
   public static bool IsCheats => (ZNet.instance && ZNet.instance.IsServer()) || Console.instance.IsCheatsEnabled();
   public static ConfigEntry<bool> configShowDPS;
@@ -22,14 +23,17 @@ public partial class Settings {
   public static ConfigEntry<bool> configAutoFireBow;
   public static bool AutoFireBow => settingsEnabled && configAutoFireBow.Value;
 #nullable enable
-  public static void Init(ConfigFile config) {
+  public static void Init(ConfigFile config)
+  {
     var section = "DPS";
     configShowDPS = config.Bind(section, "Show DPS meter", false, "Show DPS meter (toggle with P button in the game)");
-    configShowDPS.SettingChanged += (s, e) => {
+    configShowDPS.SettingChanged += (s, e) =>
+    {
       if (!ShowDPS) DPSMeter.Reset();
     };
     configShowExperience = config.Bind(section, "Show experience meter", false, "Show experience meter (toggle with L button in the game)");
-    configShowExperience.SettingChanged += (s, e) => {
+    configShowExperience.SettingChanged += (s, e) =>
+    {
       if (!ShowExperience) ExperienceMeter.Reset();
     };
     configSetSkills = config.Bind(section, "Override skill levels", -1, new ConfigDescription("Overrides skill level checks (-1 to disable).", new AcceptableValueRange<int>(-1, 100)));

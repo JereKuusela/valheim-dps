@@ -2,14 +2,18 @@ using System;
 using System.Linq;
 using UnityEngine;
 namespace DPS;
-public class Dummy {
-  private static Character Create() {
+public class Dummy
+{
+  private static Character Create()
+  {
     var prefab = ZNetScene.instance.GetPrefab("TrainingDummy");
     return UnityEngine.Object.Instantiate<GameObject>(prefab, Player.m_localPlayer.transform.position + Player.m_localPlayer.transform.forward * 2f + Vector3.up, Quaternion.identity).GetComponent<Character>();
   }
-  private static HitData.DamageModifier GetModifier(string value) {
+  private static HitData.DamageModifier GetModifier(string value)
+  {
     value = value.Trim().ToLower();
-    switch (value) {
+    switch (value)
+    {
       case "ignore": return HitData.DamageModifier.Ignore;
       case "weak": return HitData.DamageModifier.Weak;
       case "veryweak": return HitData.DamageModifier.VeryWeak;
@@ -30,7 +34,8 @@ public class Dummy {
       default: return HitData.DamageModifier.Normal;
     }
   }
-  public static void Spawn(string[] args) {
+  public static void Spawn(string[] args)
+  {
     var character = Create();
     var baseAI = character.GetComponent<BaseAI>();
     if (baseAI) baseAI.SetHuntPlayer(true);
@@ -45,23 +50,27 @@ public class Dummy {
     character.m_damageModifiers.m_poison = HitData.DamageModifier.Normal;
     character.m_damageModifiers.m_slash = HitData.DamageModifier.Normal;
     character.m_damageModifiers.m_spirit = HitData.DamageModifier.Normal;
-    foreach (var arg in args.OrderBy(item => item)) {
+    foreach (var arg in args.OrderBy(item => item))
+    {
       var split = arg.Split('=');
       var type = split[0].ToLower();
       var modifier = split.Length > 1 ? GetModifier(split[1]) : HitData.DamageModifier.Normal;
       var hasDuration = Int32.TryParse(split.Length > 1 ? split[1] : "", out var duration);
       UpdateModifier(type, character, modifier);
       var seName = GetStatusEffect(type);
-      if (seName != "") {
+      if (seName != "")
+      {
         var se = seMan.AddStatusEffect(seName, true);
         if (hasDuration)
           se.m_ttl = duration;
       };
     }
   }
-  private static string GetStatusEffect(string value) {
+  private static string GetStatusEffect(string value)
+  {
     value = value.Trim().ToLower();
-    switch (value) {
+    switch (value)
+    {
       case "cold":
         return "Cold";
       case "corpserun":
@@ -95,7 +104,8 @@ public class Dummy {
 
     }
   }
-  private static void UpdateModifier(string type, Character character, HitData.DamageModifier modifier) {
+  private static void UpdateModifier(string type, Character character, HitData.DamageModifier modifier)
+  {
     if (type == "*" || type == "blunt")
       character.m_damageModifiers.m_blunt = modifier;
     if (type == "*" || type == "chop")
@@ -117,9 +127,11 @@ public class Dummy {
     if (type == "*" || type == "spirit")
       character.m_damageModifiers.m_spirit = modifier;
   }
-  public static int Kill() {
+  public static int Kill()
+  {
     var dummies = Character.GetAllCharacters().Where(item => item.m_name.ToLower() == "trainingdummy");
-    foreach (var dummy in dummies) {
+    foreach (var dummy in dummies)
+    {
       HitData hitData = new();
       hitData.m_damage.m_damage = 1E+10f;
       dummy.Damage(hitData);

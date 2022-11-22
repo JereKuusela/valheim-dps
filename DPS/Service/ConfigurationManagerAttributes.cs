@@ -26,7 +26,8 @@
 /// </remarks>
 #pragma warning disable 0169, 0414, 0649
 #nullable disable
-internal sealed class ConfigurationManagerAttributes {
+internal sealed class ConfigurationManagerAttributes
+{
   /// <summary>
   /// Should the setting be shown as a percentage (only use with value range settings).
   /// </summary>
