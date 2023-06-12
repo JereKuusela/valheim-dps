@@ -8,20 +8,20 @@ public partial class Settings
   public static bool ShowDPS => configShowDPS.Value;
   public static ConfigEntry<bool> configShowExperience;
   public static bool ShowExperience => configShowExperience.Value;
-  private static bool settingsEnabled => IsCheats && (ShowDPS || ShowExperience);
-  private static float fromPercent(int value) => (float)value / 100f;
+  private static bool SettingsEnabled => IsCheats && (ShowDPS || ShowExperience);
+  private static float FromPercent(int value) => (float)value / 100f;
   public static ConfigEntry<int> configSetSkills;
-  public static float SetSkills => settingsEnabled && configSetSkills.Value != -1 ? fromPercent(configSetSkills.Value) : -1;
+  public static float SetSkills => SettingsEnabled && configSetSkills.Value != -1 ? FromPercent(configSetSkills.Value) : -1;
   public static ConfigEntry<int> configPlayerDamageRange;
-  public static float PlayerDamageRange => settingsEnabled && configPlayerDamageRange.Value != 15 ? fromPercent(configPlayerDamageRange.Value) : -1;
+  public static float PlayerDamageRange => SettingsEnabled && configPlayerDamageRange.Value != 15 ? FromPercent(configPlayerDamageRange.Value) : -1;
   public static ConfigEntry<int> configCreatureDamageRange;
-  public static float CreatureDamageRange => settingsEnabled && configCreatureDamageRange.Value != 25 ? fromPercent(configCreatureDamageRange.Value) : -1;
+  public static float CreatureDamageRange => SettingsEnabled && configCreatureDamageRange.Value != 25 ? FromPercent(configCreatureDamageRange.Value) : -1;
   public static ConfigEntry<int> configMaxAttackChainLevels;
-  public static int MaxAttackChainLevels => settingsEnabled && configMaxAttackChainLevels.Value != -1 ? configMaxAttackChainLevels.Value : -1;
+  public static int MaxAttackChainLevels => SettingsEnabled && configMaxAttackChainLevels.Value != -1 ? configMaxAttackChainLevels.Value : -1;
   public static ConfigEntry<bool> configNoStaminaUsage;
-  public static bool NoStaminaUsage => settingsEnabled && configNoStaminaUsage.Value;
+  public static bool NoStaminaUsage => SettingsEnabled && configNoStaminaUsage.Value;
   public static ConfigEntry<bool> configAutoFireBow;
-  public static bool AutoFireBow => settingsEnabled && configAutoFireBow.Value;
+  public static bool AutoFireBow => SettingsEnabled && configAutoFireBow.Value;
 #nullable enable
   public static void Init(ConfigFile config)
   {

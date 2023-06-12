@@ -4,7 +4,7 @@ namespace DPS;
 [HarmonyPatch(typeof(Attack), nameof(Attack.Start))]
 public class Attack_Start
 {
-  static void Postfix(Attack __instance, Humanoid character, bool __result, int ___m_currentAttackCainLevel)
+  static void Postfix(Attack __instance, Humanoid character, bool __result)
   {
     if (__result && character == Player.m_localPlayer)
     {
@@ -47,10 +47,10 @@ public class MineRock_RPC_Hit
 [HarmonyPatch(typeof(WearNTear), nameof(WearNTear.RPC_Damage))]
 public class WearNTear_RPC_Damage
 {
-  static void Postfix(WearNTear __instance, HitData hit)
+  static void Postfix(HitData hit)
   {
     if (hit.GetAttacker() == Player.m_localPlayer)
-      DPSMeter.AddStructureDamage(hit, __instance);
+      DPSMeter.AddStructureDamage(hit);
   }
 }
 [HarmonyPatch(typeof(MineRock5), nameof(MineRock5.DamageArea))]
@@ -88,7 +88,7 @@ public class Character_ApplyDamage
   static void Prefix(Character __instance, HitData hit)
   {
     if (hit.GetAttacker() == Player.m_localPlayer)
-      DPSMeter.AddDamage(hit, __instance);
+      DPSMeter.AddDamage(hit);
     if (hit.GetAttacker() == null)
       DPSMeter.AddDot(hit);
     if (__instance == Player.m_localPlayer)

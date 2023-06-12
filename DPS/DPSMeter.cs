@@ -58,26 +58,26 @@ public class DPSMeter
     stats = new();
     pending = new();
   }
-  private static void AddStructureDamage(HitData hit, int tooltier, HitData.DamageModifiers modifiers)
+  private static void AddStructureDamage(HitData hit, int tooltier)
   {
     if (!startTime.HasValue) return;
     if (hit.m_damage.m_damage > 1E+9f) return;
     if (hit.m_toolTier < tooltier) return;
     pending.StructureDamage += hit.GetTotalDamage();
   }
-  public static void AddStructureDamage(HitData hit, WearNTear obj) => AddStructureDamage(hit, 0, obj.m_damages);
-  public static void AddStructureDamage(HitData hit, TreeLog obj) => AddStructureDamage(hit, obj.m_minToolTier, obj.m_damages);
-  public static void AddStructureDamage(HitData hit, TreeBase obj) => AddStructureDamage(hit, obj.m_minToolTier, obj.m_damageModifiers);
-  public static void AddStructureDamage(HitData hit, MineRock5 obj) => AddStructureDamage(hit, obj.m_minToolTier, obj.m_damageModifiers);
-  public static void AddStructureDamage(HitData hit, MineRock obj) => AddStructureDamage(hit, obj.m_minToolTier, obj.m_damageModifiers);
-  public static void AddStructureDamage(HitData hit, Destructible obj) => AddStructureDamage(hit, obj.m_minToolTier, obj.m_damages);
+  public static void AddStructureDamage(HitData hit) => AddStructureDamage(hit, 0);
+  public static void AddStructureDamage(HitData hit, TreeLog obj) => AddStructureDamage(hit, obj.m_minToolTier);
+  public static void AddStructureDamage(HitData hit, TreeBase obj) => AddStructureDamage(hit, obj.m_minToolTier);
+  public static void AddStructureDamage(HitData hit, MineRock5 obj) => AddStructureDamage(hit, obj.m_minToolTier);
+  public static void AddStructureDamage(HitData hit, MineRock obj) => AddStructureDamage(hit, obj.m_minToolTier);
+  public static void AddStructureDamage(HitData hit, Destructible obj) => AddStructureDamage(hit, obj.m_minToolTier);
   public static void AddDamageTaken(HitData hit)
   {
     if (!startTime.HasValue) return;
     damageTaken += hit.GetTotalDamage();
     SetTime();
   }
-  public static void AddDamage(HitData hit, Character target)
+  public static void AddDamage(HitData hit)
   {
     if (!startTime.HasValue) return;
     if (hit.m_damage.m_damage > 1E+9f) return;
@@ -122,11 +122,13 @@ public class DPSMeter
     var ps = stats * perSecond;
     var total = stats + pending;
     var attackSpeed = ps.Hits > 0 ? 1 / ps.Hits : 0;
-    List<string> lines = new();
-    lines.Add("Time: " + Format.Float(time) + " seconds with " + Format.Float(stats.Hits) + " hits");
-    lines.Add("DPS: " + Format.Float(ps.Damage) + " (total " + Format.Float(total.Damage) + ")"
-      + ", per stamina: " + Format.Float(stats.DamagePerStamina));
-    lines.Add("Stamina: " + Format.Float(ps.Stamina) + " (total " + Format.Float(total.Stamina) + ")");
+    List<string> lines = new()
+    {
+      "Time: " + Format.Float(time) + " seconds with " + Format.Float(stats.Hits) + " hits",
+      "DPS: " + Format.Float(ps.Damage) + " (total " + Format.Float(total.Damage) + ")"
+      + ", per stamina: " + Format.Float(stats.DamagePerStamina),
+      "Stamina: " + Format.Float(ps.Stamina) + " (total " + Format.Float(total.Stamina) + ")"
+    };
     if (stats.TotalStamina != stats.Stamina)
       lines.Add("Total stamina: " + Format.Float(ps.TotalStamina) + " (total " + Format.Float(total.TotalStamina) + ")");
     lines.Add("Staggering: " + Format.Float(ps.Staggering) + " (total " + Format.Float(total.Staggering) + ")");

@@ -8,7 +8,7 @@ public class DPS : BaseUnityPlugin
 {
   public const string GUID = "dps";
   public const string NAME = "DPS";
-  public const string VERSION = "1.3";
+  public const string VERSION = "1.4";
 
   public void Awake()
   {

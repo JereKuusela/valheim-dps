@@ -72,20 +72,4 @@ Experience meter automatically starts tracking new skills when gaining experienc
 
 Note: Skill level can be a decimal number. This is a bug in the game and not an issue with the mod.
 
-# Changelog
-
-- v1.3
-	- Update for Mistlands PTB.
-
-- v1.2
-	- Adds a new setting to automatically shoot with the bow.
-	- Changes the GUID.
-
-- v1.1
-	- Adds a new icon.
-	- Replaces the admim check with a cheat access check.
-
-- v1.0
-	- Initial release.
-
 Thanks for Azumatt for creating the mod icon!

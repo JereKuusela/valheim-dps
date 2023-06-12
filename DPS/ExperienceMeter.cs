@@ -16,8 +16,8 @@ public class ExperienceMeter
 {
   private static DateTime? startTime = null;
   private static DateTime? endTime = null;
-  private static Dictionary<Skills.SkillType, float> experiences = new();
-  private static Dictionary<Skills.SkillType, int> instances = new();
+  private static readonly Dictionary<Skills.SkillType, float> experiences = new();
+  private static readonly Dictionary<Skills.SkillType, int> instances = new();
   public static void Start()
   {
     if (!Settings.ShowExperience) return;

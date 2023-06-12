@@ -12,27 +12,27 @@ public class Dummy
   private static HitData.DamageModifier GetModifier(string value)
   {
     value = value.Trim().ToLower();
-    switch (value)
+    return value switch
     {
-      case "ignore": return HitData.DamageModifier.Ignore;
-      case "weak": return HitData.DamageModifier.Weak;
-      case "veryweak": return HitData.DamageModifier.VeryWeak;
-      case "resistant": return HitData.DamageModifier.Resistant;
-      case "veryresistant": return HitData.DamageModifier.VeryResistant;
-      case "normal": return HitData.DamageModifier.Normal;
-      case "immune": return HitData.DamageModifier.Immune;
-      case "-": return HitData.DamageModifier.Ignore;
-      case "1.5": return HitData.DamageModifier.Weak;
-      case "2.0": return HitData.DamageModifier.VeryWeak;
-      case "2": return HitData.DamageModifier.VeryWeak;
-      case "0.5": return HitData.DamageModifier.Resistant;
-      case "0.25": return HitData.DamageModifier.VeryResistant;
-      case "1.0": return HitData.DamageModifier.Normal;
-      case "1": return HitData.DamageModifier.Normal;
-      case "0.0": return HitData.DamageModifier.Immune;
-      case "0": return HitData.DamageModifier.Immune;
-      default: return HitData.DamageModifier.Normal;
-    }
+      "ignore" => HitData.DamageModifier.Ignore,
+      "weak" => HitData.DamageModifier.Weak,
+      "veryweak" => HitData.DamageModifier.VeryWeak,
+      "resistant" => HitData.DamageModifier.Resistant,
+      "veryresistant" => HitData.DamageModifier.VeryResistant,
+      "normal" => HitData.DamageModifier.Normal,
+      "immune" => HitData.DamageModifier.Immune,
+      "-" => HitData.DamageModifier.Ignore,
+      "1.5" => HitData.DamageModifier.Weak,
+      "2.0" => HitData.DamageModifier.VeryWeak,
+      "2" => HitData.DamageModifier.VeryWeak,
+      "0.5" => HitData.DamageModifier.Resistant,
+      "0.25" => HitData.DamageModifier.VeryResistant,
+      "1.0" => HitData.DamageModifier.Normal,
+      "1" => HitData.DamageModifier.Normal,
+      "0.0" => HitData.DamageModifier.Immune,
+      "0" => HitData.DamageModifier.Immune,
+      _ => HitData.DamageModifier.Normal,
+    };
   }
   public static void Spawn(string[] args)
   {
@@ -55,12 +55,12 @@ public class Dummy
       var split = arg.Split('=');
       var type = split[0].ToLower();
       var modifier = split.Length > 1 ? GetModifier(split[1]) : HitData.DamageModifier.Normal;
-      var hasDuration = Int32.TryParse(split.Length > 1 ? split[1] : "", out var duration);
+      var hasDuration = int.TryParse(split.Length > 1 ? split[1] : "", out var duration);
       UpdateModifier(type, character, modifier);
       var seName = GetStatusEffect(type);
       if (seName != "")
       {
-        var se = seMan.AddStatusEffect(seName, true);
+        var se = seMan.AddStatusEffect(seName.GetStableHashCode(), true);
         if (hasDuration)
           se.m_ttl = duration;
       };
@@ -69,40 +69,24 @@ public class Dummy
   private static string GetStatusEffect(string value)
   {
     value = value.Trim().ToLower();
-    switch (value)
+    return value switch
     {
-      case "cold":
-        return "Cold";
-      case "corpserun":
-        return "CorpseRun";
-      case "freezing":
-        return "Freezing";
-      case "shield":
-        return "GoblinShaman_shield";
-      case "bonemass":
-        return "GP_Bonemass";
-      case "eikthyr":
-        return "GP_Eikthyr";
-      case "moder":
-        return "GP_Moder";
-      case "elder":
-        return "GP_TheElder";
-      case "yagluth":
-        return "GP_Yagluth";
-      case "barleywine":
-        return "Potion_barleywine";
-      case "frostresist":
-        return "Potion_frostresist";
-      case "poisonresist":
-        return "Potion_poisonresist";
-      case "tared":
-        return "Tared";
-      case "wet":
-        return "Wet";
-      default:
-        return "";
-
-    }
+      "cold" => "Cold",
+      "corpserun" => "CorpseRun",
+      "freezing" => "Freezing",
+      "shield" => "GoblinShaman_shield",
+      "bonemass" => "GP_Bonemass",
+      "eikthyr" => "GP_Eikthyr",
+      "moder" => "GP_Moder",
+      "elder" => "GP_TheElder",
+      "yagluth" => "GP_Yagluth",
+      "barleywine" => "Potion_barleywine",
+      "frostresist" => "Potion_frostresist",
+      "poisonresist" => "Potion_poisonresist",
+      "tared" => "Tared",
+      "wet" => "Wet",
+      _ => "",
+    };
   }
   private static void UpdateModifier(string type, Character character, HitData.DamageModifier modifier)
   {
