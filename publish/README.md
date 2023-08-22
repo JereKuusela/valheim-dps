@@ -6,7 +6,7 @@ Install on the client (modding [guide](https://youtu.be/L9ljm2eKLrk)).
 
 Install also [Server Devcommands](https://valheim.thunderstore.io/package/JereKuusela/Server_devcommands/) to use this on a server (as an admin).
 
-# Instructions
+## Instructions
 
 Use `/bind [key] [command]` to quickly toggle features on and off. For example `bind keypad1 dps`.
 
@@ -18,7 +18,7 @@ Available commands:
 - `dummy_spawn [PARAMETERS]`: Spawns a training dummy. Use if you need multiple dummies.
 - `dummy_kill`: Kills all training dummies. Use for a final clean up.
 
-# Parameters
+## Parameters
 
 Damage resistances and status effects of the training dummies can be configured. By default, dummies have no status effects and are neutral to all damage (except chop and pickaxe which they ignore).
 
@@ -34,7 +34,7 @@ Available status effects are barleywine, bonemass, cold, corpserun, eikthyr, eld
 
 For example `dummy_toggle \*=- chop wet` would spawn a wet dummy that is only vulnerable to chop damage (like trees).
 
-# Configuration
+## Configuration
 
 After first start up, the config file can be found in the \<GameDirectory\>\BepInEx\config\ folder.
 
@@ -51,7 +51,7 @@ Configuration is only active when either DPS or experience meter is displayed.
 
 For example for a controlled setup: remove stamina usage, override skill levels to 100 and set damage range to 0.
 
-# Usage
+## Usage
 
 DPS meter automatically starts tracking when you start attacking. The tracking automatically pauses until another attack is performed. For new tests, use the dps command to reset the meter.
 
@@ -72,4 +72,10 @@ Experience meter automatically starts tracking new skills when gaining experienc
 
 Note: Skill level can be a decimal number. This is a bug in the game and not an issue with the mod.
 
+## Credits
+
 Thanks for Azumatt for creating the mod icon!
+
+Sources: [GitHub](https://github.com/JereKuusela/valheim-dps)
+
+Donations: [Buy me a computer](https://www.buymeacoffee.com/jerekuusela)
